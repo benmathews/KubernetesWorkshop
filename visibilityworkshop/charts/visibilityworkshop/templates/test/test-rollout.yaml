@@ -1,0 +1,2 @@
+{{- $fullname := include "visibilityworkshop.fullname" . -}}
+{{include "test-rollout" (dict "fullname" $fullname) }}

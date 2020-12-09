@@ -1,0 +1,6 @@
+dependencies:
+- name: common
+  repository: https://tp-artifactory.vivint.com/artifactory/helm
+  version: 0.3.2
+digest: sha256:caecac7642febef9387182f3384ba4e2c4fac7c91a71b8511778bd0695dd65bd
+generated: "2021-02-09T08:53:13.67300123-07:00"

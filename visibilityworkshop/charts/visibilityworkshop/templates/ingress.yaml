@@ -1,0 +1,37 @@
+
+{{- define "visibilityworkshop.rules" -}}
+{{- $serviceName := include "visibilityworkshop.name" .default -}}
+  {{- range .hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ $serviceName }}
+              servicePort: http
+            path: /example-api
+  {{- end }}
+{{- end -}}
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "visibilityworkshop.fullname" . }}
+  labels:
+{{ include "labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+{{- if eq .Values.deploymentDestination "production" -}}
+  {{- $hosts := tuple "vivintsky.com" "www.vivintsky.com" -}}
+  {{- include "visibilityworkshop.rules" (dict "hosts" $hosts "default" .) -}}
+{{- else -}}
+  {{- $host := printf "%s.platform.vivint.com" .Release.Namespace }}
+  {{- $hostCloud := printf "%scloud.vivint.com" .Release.Namespace }}
+  {{- $hosts := tuple $host $hostCloud -}}
+  {{- include "visibilityworkshop.rules" (dict "hosts" $hosts "default" .) -}}
+{{- end }}
+
+{{- end }}

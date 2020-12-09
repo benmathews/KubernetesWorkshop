@@ -1,0 +1,32 @@
+global:
+ image:
+  tag: latest
+
+env:
+  
+  LOG_LEVEL: WARN
+  GOMAXPROCS: '2'
+  LOG_JSON: 'true'
+  AUTH_SERVICE_HOST: auth
+  
+resources:
+    limits:
+      memory: 50Mi
+    requests:
+      cpu: 10m
+      memory: 5Mi
+
+deploymentDestination: ""
+
+visibilityworkshop:
+    image:
+      repository: visibilityworkshop
+ingress:
+  enabled: true
+  annotations: {}
+
+fullnameOverride: "visibilityworkshop"
+nameOverride: ""
+
+minReplicas: 1
+maxReplicas: 1

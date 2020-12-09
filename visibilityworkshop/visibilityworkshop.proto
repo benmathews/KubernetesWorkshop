@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package visibilityworkshop;
+
+ 
+import "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/annotations.proto";
+import "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options/annotations.proto";
+ 
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "source.vivint.com/pl/messagetypes/objectid/objectid.proto";
+import "source.vivint.com/pl/messagetypes/time/time.proto";
+import "source.vivint.com/pl/protoc-gen-voter/v2/definition/voter.proto";
+
+// The following option tells protoc the import path of Go generated files for
+// this proto. If another proto imports this proto this option is essential for
+// generating a correct import path. If you change the directory you use for
+// generated files you should also update this path.
+option go_package = "source.vivint.com/pl/visibilityworkshop/generated";
+
+// options to prevent generation of XXX fields, since we are serializing the generated object directly to mongo
+option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.goproto_sizecache_all) = false; 
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+    info: {
+        title: "VisibilityWorkshop Service"
+        version: "1.0.0"
+        contact: {
+            name: "Platform Team"
+            url: "https://source.vivint.com/pl/visibilityworkshop"
+            email: "ben.mathews@vivint.com"
+        };
+    };
+}; 
+
+service VisibilityWorkshop {
+    option (vote.service) = {
+        scheme: "Any"
+        voter:  "ServiceAccountAuthentication" 
+        voter:  "CookieAuthentication"
+        voter:  "TokenAuthentication" 
+
+    }; 
+    option (grpc.gateway.protoc_gen_swagger.options.openapiv2_tag) = {
+        description: "VisibilityWorkshop service for << insert description here >>"
+    }; 
+
+    rpc HelloWorld(HelloWorldRequest) returns (HelloWorldResponse) { 
+        option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+            summary: "Example rpc method to show bells and whistles availalble to developer"
+            description: "HelloWorld example that shows off some bells and whistles like bson tagging of the generated structure, custom types from our messagetypes library like nullable, time, and objectid"
+            consumes: "application/json"
+            produces: "application/json"
+    };
+    option (google.api.http) = {
+        get: "/example-api/v0/helloworld"
+    }; 
+  }
+}
+
+message HelloWorldRequest { 
+    string name = 1 [(validator.field) = {string_not_empty: true }];
+}
+
+// Demonstrate bson tagging - i.e. simulating if this response was also persisted to mongo
+message HelloWorldResponse { 
+    objectid.ObjectIdMessage id = 1 [(gogoproto.customtype) = "source.vivint.com/pl/messagetypes/objectid.MgoDriverObjectId", (gogoproto.jsontag) = "_id,omitempty", (gogoproto.moretags) = "bson:\"_id\" msgpack:\"_id\"", (validator.field) = {msg_exists: true}];
+    string text = 2;
+    time.TimeMessage timestamp = 3 [(gogoproto.customtype) = "source.vivint.com/pl/messagetypes/time.CustomTime", (gogoproto.jsontag) = "ts,omitempty", (gogoproto.moretags) = "bson:\"ts\" msgpack:\"ts\""];
+}

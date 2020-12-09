@@ -1,0 +1,46 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "visibilityworkshop.fullname" . }}
+  labels:
+{{ include "labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ include "podLabels" . | indent 6 }}
+  strategy:
+{{ include "rolling-strategy" . | indent 4 }}
+  template:
+    metadata:
+      labels:
+{{ include "podLabels" . | indent 8 }}
+        language: golang
+    spec:
+      affinity:
+{{ include "podAntiAffinity" . | indent 8 }}
+      containers:
+      - name: {{ template "visibilityworkshop.name" . }}
+        image: {{ include "image" . }}
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        imagePullPolicy: IfNotPresent
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        ports:
+         - name: grpc
+           containerPort: 9090 
+         - name: http
+           containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 2112
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 2112
+      serviceAccountName: {{ template "visibilityworkshop.name" . }}

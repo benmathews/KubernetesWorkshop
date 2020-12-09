@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart for << enter description here >> 
+home: https://source.vivint.com/projects/PL/repos/visibilityworkshop/browse
+name: visibilityworkshop
+version: 1.0.0
+icon: https://vivintsky.com/app/favicon.ico
+maintainers:
+- name: Ben Mathews
+  email: ben.mathews@vivint.com

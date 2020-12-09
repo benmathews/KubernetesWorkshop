@@ -1,0 +1,5 @@
+#!groovy
+
+@Library('jenkinslib/vivdocker') _
+
+vivdocker.buildAndPushImageAndChart('visibilityworkshop')

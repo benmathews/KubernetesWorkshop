@@ -71,24 +71,36 @@ Server Version: version.Info{Major:"1", Minor:"17", ...
 
 # Prerequisites
 
-## Registration
+## Set up a registry
 
-Set up a registry 
-
+### Enable registry for `microk8s`
 ```
 microk8s enable registry
 ```
 
-Add to /etc/docker/daemon.json
+### Allow docker to access the registry insecurely
+
+Add the following entry to your system's docker config (don't forget a comma, if necessary, to make it properly formatted json)
 ```
 {
-  "insecure-registries" : ["localhost:32000"]
+  "insecure-registries" : ["myreg:32000"]
 }
 ```
 
+#### Linux:
+ * Add the line to `/etc/docker/daemon.json` (create the file if necessary)
+ * Restart `docker`
 ```
 sudo systemctl restart docker
 ```
+
+#### MacOS:
+Add the line to the `Docker Engine` configuration in `Preferences`
+ * From the Mac status bar, go to `Docker | Preferences`
+ * Navigate to the `Docker Engine` section
+ * Add the line to the displayed json
+ * Click `Apply & Restart`
+
 
 ---
 
@@ -211,11 +223,11 @@ docker build . -t demowebapp:v1.0.0
 Push your image into the local registry
 
 ```
-docker build . -t localhost:32000/demowebapp:v1.0.0
+docker build . -t myreg:32000/demowebapp:v1.0.0
 # or
-docker tag demowebapp:v1.0.0 localhost:32000/demowebapp:v1.0.0
+docker tag demowebapp:v1.0.0 myreg:32000/demowebapp:v1.0.0
 
-docker push localhost:32000/demowebapp:v1.0.0
+docker push myreg:32000/demowebapp:v1.0.0
 ```
 
 ---
@@ -268,7 +280,7 @@ spec:
         app: demodeploy
     spec:
       containers:
-      - image: localhost:32000/test:latest
+      - image: myreg:32000/test:latest
         name: test
 ```
 ---
@@ -279,7 +291,7 @@ spec:
  - Examine it and the artifacts it creates
 
 ``` bash
-kubectl create deployment demodeploy --image=localhost:32000/demowebapp:v1.0.0
+kubectl create deployment demodeploy --image=myreg:32000/demowebapp:v1.0.0
 kubectl get deployment
 kubectl describe deloyment demodeploy
 kubectl get deployment demodeploy -o yaml

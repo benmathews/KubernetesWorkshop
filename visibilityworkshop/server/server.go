@@ -11,6 +11,9 @@ import (
 	vtime "source.vivint.com/pl/messagetypes/time"
 	"source.vivint.com/pl/mongo/v4"
 	proto "source.vivint.com/pl/visibilityworkshop/generated"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 const (
@@ -25,10 +28,20 @@ func NewServer() *server {
 	return &server{}
 }
 
+var (
+	HelloWorldCounter = promauto.NewCounter(prometheus.CounterOpts{
+		Namespace: "viv_visibilityworkshop",
+		Name:      "hello_world_counter",
+		Help:      "Number of times Hello World has been called",
+	})
+)
+
 func (s *server) HelloWorld(ctx context.Context, request *proto.HelloWorldRequest) (*proto.HelloWorldResponse, error) {
 	if request.GetName() == "" {
 		return nil, vgrpc.MakeError(codes.InvalidArgument, "Name is a required parameter", nil)
 	}
+
+	HelloWorldCounter.Inc()
 
 	response := &proto.HelloWorldResponse{
 		Id:        objectid.NewMgoDriverObjectId(mongo.NewObjectID()),

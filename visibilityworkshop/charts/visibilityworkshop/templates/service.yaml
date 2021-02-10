@@ -12,6 +12,8 @@ spec:
     port: 8080
   - name: grpc
     port: 9090
+  - name: prometheus
+    port: 2112
   selector:
     app: {{ include "visibilityworkshop.name" . }}
   sessionAffinity: None

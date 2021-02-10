@@ -35,6 +35,8 @@ spec:
            containerPort: 9090 
          - name: http
            containerPort: 8080
+         - name: prometheus
+           containerPort: 2112
         livenessProbe:
           httpGet:
             path: /health/live

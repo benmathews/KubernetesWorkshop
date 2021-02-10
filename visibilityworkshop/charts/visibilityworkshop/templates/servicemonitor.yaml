@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "visibilityworkshop.name" . }}
+  labels:
+{{ include "labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels: 
+{{ include "labels" . | indent 6 }}
+  endpoints:
+  - port: prometheus

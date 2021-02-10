@@ -7,6 +7,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/mwitkow/go-proto-validators v0.3.0
+	github.com/prometheus/client_golang v1.5.1
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/net v0.0.0-20200822124328-c89045814202
 	google.golang.org/genproto v0.0.0-20200804131852-c06518451d9c
